@@ -19,9 +19,13 @@
   <button (click)="clickHandler()">Click me</button>
   <button (dblclick)="clickHandler()">Double me</button>
   <p>(change)</p>
-  <input type="text" [value]="person.age" (change)="inputHandler($event)" />
+  <input type="text" [value]="person().age" (change)="inputHandler($event)" />
   <p>(keydown)</p>
-  <input type="text" [value]="person.name" (keydown)="keydownHandler($event)" />
+  <input
+    type="text"
+    [value]="person().name"
+    (keydown)="keydownHandler($event)"
+  />
   <hr />
   <h1>Signals</h1>
   <input type="text" [value]="name()" (change)="inputHandler($event)" />
@@ -31,4 +35,11 @@
     <p>total: {{ tasks().length }}</p>
     <li *ngFor="let task of tasks(); index as i">{{ i }} {{ task }}</li>
   </ul>
+  <hr />
+  <div
+    *ngIf="person().name === 'sebastian' && person().age > 18; else miBloque"
+  >
+    My name Sebastian and i have 35
+  </div>
+  <ng-template #miBloque> Soy sebastian y soy menor de 18 </ng-template>
 </div>

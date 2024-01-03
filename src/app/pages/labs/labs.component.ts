@@ -21,11 +21,11 @@ export class LabsComponent {
   disabled = true
   img = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8kaL634jBYaVHzczHdzni68wj2vrnUaiAPGlMx5pGmg&s'
 
-  person = {
+  person = signal({
     name: 'sebastian',
     age: 35,
     avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8kaL634jBYaVHzczHdzni68wj2vrnUaiAPGlMx5pGmg&s'
-  }
+  })
   clickHandler() {
     alert('Hola')
   }

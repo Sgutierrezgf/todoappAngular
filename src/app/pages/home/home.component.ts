@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { Task } from '../../models/task.model';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -22,10 +23,22 @@ export class HomeComponent {
       completed: false
     },
   ]);
-  changeHandler(event: Event){
-    const input = event.target as HTMLInputElement
-    const newTasks = input.value
-    this.addTask(newTasks)
+
+  newTasksCtrl = new FormControl('', {
+    nonNullable: true,
+    validators: [
+      Validators.required,
+    ]
+  })
+
+  changeHandler(){
+    if(this.newTasksCtrl.valid){
+      const value = this.newTasksCtrl.value.trim()
+      if(value !== ''){
+        this.addTask(value)
+        this.newTasksCtrl.setValue('')
+      }
+    }
   }
 
   addTask(title: string){
@@ -39,5 +52,52 @@ export class HomeComponent {
 
   deleteTask(index: number){
     this.tasks.update((tasks) => tasks.filter((task,position)=> position !== index))
+  }
+
+  updateTask(index: number){
+    this.tasks.update((tasks)=>{
+      return tasks.map((task, position)=>{
+        if(position === index){
+          return{
+            ...task,
+            completed: !task.completed
+          }
+        }
+        return task;
+      })
+    })
+  }
+
+  updateTaskEditingMode(index: number){
+    this.tasks.update((tasks)=>{
+      return tasks.map((task, position)=>{
+        if(position === index){
+          return{
+            ...task,
+            editing: true
+          }
+        }
+        return {
+          ...task,
+          editing: false
+        };
+      })
+    })
+  }
+
+  updateTaskText(index: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.tasks.update(prevState => {
+      return prevState.map((task, position) => {
+        if (position === index) {
+          return {
+            ...task,
+            title: input.value,
+            editing: false
+          }
+        }
+        return task;
+      })
+    });
   }
 }
